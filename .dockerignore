@@ -7,5 +7,6 @@ __pycache__
 output
 .env
 *.md
+!README.md
 .vscode
 .idea
