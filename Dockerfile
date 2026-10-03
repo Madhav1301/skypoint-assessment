@@ -15,5 +15,6 @@ COPY tests/ tests/
 COPY pytest.ini .
 # README.md is part of the test surface: the suite executes its SQL examples.
 COPY README.md .
+COPY scripts/ scripts/
 
 CMD ["python", "-m", "pipeline.run"]
