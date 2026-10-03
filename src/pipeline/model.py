@@ -299,6 +299,6 @@ def write_dq_reports(con, output_dir: Path) -> list[str]:
         lines.append("")
 
         name = f"dq_report_{batch_id}.md"
-        (output_dir / name).write_text("\n".join(lines), encoding="utf-8")
+        (output_dir / name).write_text("\n".join(lines), encoding="utf-8", newline="\n")
         written.append(name)
     return written
