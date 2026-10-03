@@ -1,0 +1,86 @@
+# Data-quality rules: every check the pipeline applies, its severity, and why.
+#
+# Severity semantics:
+#   batch   -> the whole delivery is rejected before anything loads
+#   error   -> the row cannot be trusted at its grain: quarantined
+#   warning -> the row stands; the degraded field is null with a reason code
+#              (or flagged) and excluded from calculations that need it
+#
+# The short error list is deliberate: only identity, time-ordering and
+# facility-grain failures quarantine a row; everything else is kept visible.
+
+publish_gate:
+  # A batch whose error-level rows exceed this share of received rows is not
+  # published to the analytical layer. Healthy batches in this feed show
+  # ~0.5-1% error rows, so 10% tolerates routine mess but trips on systemic
+  # failure. Overridable via env PUBLISH_GATE_THRESHOLD.
+  max_error_row_share: 0.10
+
+checks:
+  - id: MANIFEST_VALIDATION
+    severity: batch
+    description: row count and SHA-256 of every file must match the manifest
+
+  - id: SCHEMA_CONTRACT
+    severity: batch
+    description: file header must exactly match a configured contract version
+
+  - id: MISSING_SOURCE_RECORD_ID
+    severity: error
+    description: no identity means the row cannot be versioned
+
+  - id: INVALID_LAST_UPDATED_TS
+    severity: error
+    description: without an orderable timestamp, current state is undecidable
+
+  - id: UNRESOLVED_FACILITY
+    severity: error
+    description: facility is a reporting grain and the brief forbids guessing
+
+  - id: INVALID_ADMIT_DATE
+    severity: warning
+    description: unparseable, impossible or post-delivery date -> null + reason
+
+  - id: INVALID_DISCHARGE_DATE
+    severity: warning
+    description: unparseable, impossible or post-delivery date -> null + reason
+
+  - id: DISCHARGE_BEFORE_ADMIT
+    severity: warning
+    description: row kept and flagged; length_of_stay left null
+
+  - id: INVALID_DOB
+    severity: warning
+    description: unparseable or future date of birth -> null + reason; age UNKNOWN
+
+  - id: INVALID_BILLED_AMOUNT
+    severity: warning
+    description: blank, N/A, PENDING or unparseable -> null + reason, never zero
+
+  - id: INVALID_NPI
+    severity: warning
+    description: fails 10-digit or Luhn(80840) check; provider join yields unknown
+
+  - id: NPI_NOT_IN_ROSTER
+    severity: warning
+    description: structurally valid NPI that appears in no roster snapshot
+
+  - id: INVALID_DX_CODE
+    severity: warning
+    description: unparseable, ICD-9 legacy, or valid format absent from reference
+
+  - id: UNMAPPED_ENCOUNTER_TYPE
+    severity: warning
+    description: value outside the configured mapping -> UNKNOWN
+
+  - id: UNMAPPED_CLAIM_STATUS
+    severity: warning
+    description: value outside the configured mapping -> null + reason
+
+  - id: UNMAPPED_PAYER
+    severity: warning
+    description: value outside the configured mapping -> UNKNOWN category
+
+  - id: MISSING_DOB_NO_LINKAGE
+    severity: warning
+    description: identity kept per-system; never linked across systems (brief rule)

@@ -1,0 +1,36 @@
+# Canonical value mappings for categorical fields.
+# Matching is done on the normalised raw value: uppercased, trimmed, internal
+# whitespace collapsed. Values that match nothing map to UNKNOWN (and the raw
+# value is always kept alongside), except claim_status, where an unmapped value
+# stays null with reason code UNMAPPED_CLAIM_STATUS.
+
+encounter_type:
+  INPATIENT:   [INPATIENT, IP, INPT, IN-PATIENT, INPATIENT ADMISSION]
+  OBSERVATION: [OBSERVATION, OBS, OBS STAY]
+  EMERGENCY:   [EMERGENCY, ED, ER, EMERGENCY ROOM, EMERGENCY DEPT]
+  OUTPATIENT:  [OUTPATIENT, OP, OUT PATIENT, OFFICE VISIT, CLINIC VISIT]
+  TELEHEALTH:  [TELEHEALTH, TELEMED, VIDEO VISIT, VIRTUAL]
+  URGENT_CARE: [URGENT CARE, UC, WALK-IN URGENT]
+  # Observed value OTHER (and blanks) intentionally unmapped -> UNKNOWN
+
+claim_status:
+  PAID:      [PAID, PAID IN FULL, CLOSED - PAID]
+  DENIED:    [DENIED, REJECTED]
+  SUBMITTED: [SUBMITTED, PENDING, IN PROCESS]
+  # Assumption A2: a cancelled claim is treated as VOID
+  VOID:      [VOID, VOIDED, CANCELLED]
+
+payer_category:
+  MEDICARE:   [MEDICARE, MCR, MEDICARE PART A, MEDICARE - PART B]
+  # BadgerCare Plus is Wisconsin Medicaid; IA Medicaid is Iowa Medicaid
+  MEDICAID:   [MEDICAID, IA MEDICAID, STATE MEDICAID PLAN, BADGERCARE PLUS]
+  COMMERCIAL: [AETNA, AETNA INC, CIGNA, CIGNA HEALTH, UNITEDHEALTHCARE, UHC,
+               BCBS, BLUE CROSS BLUE SHIELD]
+  SELF_PAY:   [SELF PAY, SELF-PAY, SELFPAY, UNINSURED]
+  # TRICARE is federal but neither Medicare nor Medicaid; Workers Comp is not
+  # health insurance in the usual sense -> OTHER
+  OTHER:      [TRICARE, WORKERS COMP]
+
+patient_sex:
+  M: [M, MALE]
+  F: [F, FEMALE]

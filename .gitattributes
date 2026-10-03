@@ -1,0 +1,12 @@
+# Source files: normalized line endings (LF in repo and on checkout).
+* text=auto eol=lf
+
+# The data pack must be byte-identical on every clone: the pipeline verifies
+# each file's SHA-256 against its manifest, so git must never rewrite line
+# endings or otherwise touch these files.
+data/** -text
+
+# Binary assets
+*.png binary
+*.pdf binary
+*.duckdb binary

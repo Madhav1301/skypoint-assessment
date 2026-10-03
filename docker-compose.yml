@@ -1,0 +1,26 @@
+services:
+  pipeline:
+    build: .
+    environment:
+      DATA_DIR: /data
+      OUTPUT_DIR: /output
+      CONFIG_DIR: /app/config
+      PATIENT_KEY_SECRET: ${PATIENT_KEY_SECRET:-dev-only-hmac-key-0f4c81-do-not-use-in-production}
+      PUBLISH_GATE_THRESHOLD: ${PUBLISH_GATE_THRESHOLD:-0.10}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    volumes:
+      - ./data/candidate_pack:/data:ro
+      - ./output:/output
+
+  tests:
+    profiles: ["tests"]
+    build: .
+    command: pytest -q
+    environment:
+      DATA_DIR: /data
+      CONFIG_DIR: /app/config
+      PATIENT_KEY_SECRET: ${PATIENT_KEY_SECRET:-dev-only-hmac-key-0f4c81-do-not-use-in-production}
+      PUBLISH_GATE_THRESHOLD: ${PUBLISH_GATE_THRESHOLD:-0.10}
+      LOG_LEVEL: ${LOG_LEVEL:-WARNING}
+    volumes:
+      - ./data/candidate_pack:/data:ro

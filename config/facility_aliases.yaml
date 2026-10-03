@@ -1,0 +1,57 @@
+# Facility name resolution: per source system, canonical facility_id -> the
+# normalised name variants observed in that system's feeds.
+#
+# Normalisation applied before lookup (same in code and in this file):
+#   uppercase, strip the punctuation . , ' -, collapse runs of whitespace.
+# Resolution is deliberately an exact lookup on the normalised name: with only
+# 8 facilities a curated alias table is deterministic and auditable, where
+# fuzzy matching could silently mis-assign a hospital. Unresolved names are
+# quarantined (reason UNRESOLVED_FACILITY) and surface in the DQ report; a
+# genuinely new variant is added here, as config, after review.
+#
+# Known-bad values intentionally NOT aliased (they must quarantine):
+#   "TEST FACILITY - DO NOT USE" (EPIC_NORTH), "Westfield Surgical Center"
+#   (ATHENA_CLINICS - not part of the 8-facility master).
+
+EPIC_NORTH:
+  FAC001:
+    - LAKESHORE GENERAL HOSPITAL
+    - LAKESHORE GEN HOSP
+    - LAKESHORE GENERAL
+  FAC002:
+    - ST BRENDAN MEDICAL CENTER
+    - ST BRENDAN MED CTR
+    - ST BRENDANS MEDICAL CENTER
+    - SAINT BRENDAN MEDICAL CENTER
+  FAC003:
+    - MAPLE GROVE PEDIATRICS
+    - MAPLE GROVE PEDIATRIC CLINIC
+    - MAPLE GROVE PEDS
+
+LEGACY_MEDITECH:
+  FAC004:
+    - RIVERBEND COMMUNITY HOSPITAL
+    - RIVERBEND COMMUNITY HOSP
+    - RIVERBEND COMM HOSP
+    - RIVERBEND CH
+  FAC005:
+    - HARBOR POINT BEHAVIORAL HEALTH
+    - HARBOR PT BEHAVIORAL HLTH
+    - HARBORPOINT BEHAVIORAL HEALTH
+    - HARBOR POINT BH
+
+ATHENA_CLINICS:
+  FAC006:
+    - CEDAR VALLEY FAMILY CLINIC
+    - CEDAR VLY FAMILY CLINIC
+    - CEDAR VALLEY CLINIC
+  FAC007:
+    - EASTGATE URGENT CARE
+    - EASTGATE UC
+    - EASTGATE URGENT CARE CENTER
+    - EAST GATE URGENT CARE
+  FAC008:
+    - SUMMIT RIDGE ORTHOPEDICS
+    - SUMMIT RIDGE ORTHO
+    - SUMMIT RIDGE ORTHOPEDIC CLINIC
+    - SUMMIT RIDGE ORTHOPAEDICS
