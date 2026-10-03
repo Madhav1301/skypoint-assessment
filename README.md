@@ -5,9 +5,12 @@ Assessment: it ingests weekly batches of messy healthcare encounter CSVs from
 three EHR source systems, validates them against their manifests, cleans and
 de-identifies them, and models a small governed warehouse with full lineage.
 
-> **Status: work in progress.** Task 1 (ingest & validate) is implemented;
-> cleaning, PHI protection, versioning, the warehouse model and the required
-> export land in subsequent commits. This README grows with the code.
+> **Status: core pipeline complete** (Tasks 1–7): manifest-gated ingestion,
+> unit-tested parsers, PHI boundary, versioned clean layer with duplicate and
+> stale handling, publish gate, dimensional gold layer with an SCD2 provider
+> dimension, per-batch DQ reports and the required export — proven by 256
+> tests including the idempotency and gate proofs. Remaining: final docs
+> (ARCHITECTURE.md), Docker verification on a machine with Docker, bonus.
 
 ## How to run
 
