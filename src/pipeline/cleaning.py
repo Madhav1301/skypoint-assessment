@@ -192,7 +192,12 @@ def clean_row(raw: dict, ctx: CleanContext) -> CleanedRow:
         if future:
             discharge, discharge_reason = None, future
     row.discharge_date = discharge
-    note("discharge_date", discharge_reason)
+    if discharge_reason == "MISSING":
+        # An absent discharge is the normal state for ambulatory encounters:
+        # the reason code is recorded, but it is not a data-quality warning.
+        row.reasons["discharge_date"] = discharge_reason
+    else:
+        note("discharge_date", discharge_reason)
 
     if admit is not None and discharge is not None:
         if discharge < admit:

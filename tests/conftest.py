@@ -39,12 +39,36 @@ def icd10_codes() -> set[str]:
     return set(load_icd10_reference(REPO_ROOT / "data" / "candidate_pack").keys())
 
 
+@pytest.fixture(scope="session")
+def run_cfg(contracts, value_mappings, facility_aliases, icd10_codes):
+    from pipeline.config import load_source_conventions
+    from pipeline.ingest import RunConfig
+
+    conventions = load_source_conventions(REPO_ROOT / "data" / "candidate_pack")["source_systems"]
+    return RunConfig(
+        contracts=contracts,
+        conventions=conventions,
+        facility_aliases_cfg=facility_aliases,
+        value_mappings_cfg=value_mappings,
+        icd10_codes=icd10_codes,
+        patient_key_secret="test-secret",
+        gate_threshold=0.10,
+    )
+
+
+_FACILITY_FOR_SYSTEM = {
+    "EPIC_NORTH": "Lakeshore General Hospital",
+    "ATHENA_CLINICS": "Eastgate Urgent Care",
+    "LEGACY_MEDITECH": "Riverbend Community Hospital",
+}
+
+
 def _sample_row(source_system: str, record_id: str) -> list[str]:
     """One synthetic encounter row in canonical column order (fake values only)."""
     values = {
         "source_system": source_system,
         "source_record_id": record_id,
-        "facility_name": "Lakeshore General Hospital",
+        "facility_name": _FACILITY_FOR_SYSTEM.get(source_system, "Lakeshore General Hospital"),
         "patient_mrn": "TEST-MRN-1",
         "patient_first_name": "Test",
         "patient_last_name": "Patient",

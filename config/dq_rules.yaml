@@ -43,7 +43,10 @@ checks:
 
   - id: INVALID_DISCHARGE_DATE
     severity: warning
-    description: unparseable, impossible or post-delivery date -> null + reason
+    description: >
+      unparseable, impossible or post-delivery date -> null + reason. A BLANK
+      discharge is NOT flagged: it is the normal state for ambulatory visits
+      (the reason code MISSING is still recorded on the row)
 
   - id: DISCHARGE_BEFORE_ADMIT
     severity: warning
