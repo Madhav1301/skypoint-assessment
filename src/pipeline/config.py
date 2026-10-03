@@ -43,6 +43,23 @@ def load_yaml_config(config_dir: Path, name: str) -> dict:
         return yaml.safe_load(f)
 
 
+def load_icd10_reference(data_dir: Path) -> dict[str, dict]:
+    """reference/icd10_reference.csv -> {code: {description, category, is_chronic}}."""
+    import csv
+
+    path = data_dir / "reference" / "icd10_reference.csv"
+    with open(path, "r", encoding="utf-8-sig", newline="") as f:
+        return {
+            row["icd10_code"].strip(): {
+                "description": row["description"],
+                "category": row["category"],
+                "is_chronic": row["is_chronic"].strip().upper() == "Y",
+            }
+            for row in csv.DictReader(f)
+            if row.get("icd10_code", "").strip()
+        }
+
+
 def load_source_conventions(data_dir: Path) -> dict:
     """Parse reference/source_systems_and_facilities.json.
 

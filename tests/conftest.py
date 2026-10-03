@@ -22,6 +22,23 @@ def contracts() -> dict:
     return load_yaml_config(REPO_ROOT / "config", "schema_contracts.yaml")["contracts"]
 
 
+@pytest.fixture(scope="session")
+def value_mappings() -> dict:
+    return load_yaml_config(REPO_ROOT / "config", "value_mappings.yaml")
+
+
+@pytest.fixture(scope="session")
+def facility_aliases() -> dict:
+    return load_yaml_config(REPO_ROOT / "config", "facility_aliases.yaml")
+
+
+@pytest.fixture(scope="session")
+def icd10_codes() -> set[str]:
+    from pipeline.config import load_icd10_reference
+
+    return set(load_icd10_reference(REPO_ROOT / "data" / "candidate_pack").keys())
+
+
 def _sample_row(source_system: str, record_id: str) -> list[str]:
     """One synthetic encounter row in canonical column order (fake values only)."""
     values = {
