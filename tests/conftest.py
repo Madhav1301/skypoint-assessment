@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -12,6 +13,10 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "src"))
+
+# Inside the container the pack is mounted read-only at $DATA_DIR (/data);
+# locally it lives in the repo. Every test resolves data through this path.
+DATA_DIR = Path(os.environ.get("DATA_DIR") or REPO_ROOT / "data" / "candidate_pack")
 
 from pipeline.config import load_yaml_config  # noqa: E402
 from pipeline.ingest import CANONICAL_COLUMNS  # noqa: E402
@@ -33,10 +38,15 @@ def facility_aliases() -> dict:
 
 
 @pytest.fixture(scope="session")
+def data_dir() -> Path:
+    return DATA_DIR
+
+
+@pytest.fixture(scope="session")
 def icd10_codes() -> set[str]:
     from pipeline.config import load_icd10_reference
 
-    return set(load_icd10_reference(REPO_ROOT / "data" / "candidate_pack").keys())
+    return set(load_icd10_reference(DATA_DIR).keys())
 
 
 @pytest.fixture(scope="session")
@@ -44,7 +54,7 @@ def run_cfg(contracts, value_mappings, facility_aliases, icd10_codes):
     from pipeline.config import load_source_conventions
     from pipeline.ingest import RunConfig
 
-    conventions = load_source_conventions(REPO_ROOT / "data" / "candidate_pack")["source_systems"]
+    conventions = load_source_conventions(DATA_DIR)["source_systems"]
     return RunConfig(
         contracts=contracts,
         conventions=conventions,

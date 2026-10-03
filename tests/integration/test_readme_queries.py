@@ -7,6 +7,7 @@ rot as the schema evolves.
 
 from __future__ import annotations
 
+import os
 import re
 from pathlib import Path
 
@@ -18,7 +19,7 @@ from pipeline.model import build_gold, build_reference
 from pipeline.versioning import VersionState
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DATA_DIR = REPO_ROOT / "data" / "candidate_pack"
+DATA_DIR = Path(os.environ.get("DATA_DIR") or REPO_ROOT / "data" / "candidate_pack")
 README = REPO_ROOT / "README.md"
 
 pytestmark = pytest.mark.skipif(

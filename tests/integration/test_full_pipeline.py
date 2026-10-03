@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import csv
 import filecmp
+import os
 import shutil
 from datetime import date
 from pathlib import Path
@@ -28,7 +29,7 @@ from pipeline.model import build_gold, build_reference, write_outputs
 from pipeline.versioning import VersionState
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DATA_DIR = REPO_ROOT / "data" / "candidate_pack"
+DATA_DIR = Path(os.environ.get("DATA_DIR") or REPO_ROOT / "data" / "candidate_pack")
 
 pytestmark = pytest.mark.skipif(
     not (DATA_DIR / "landing").exists(), reason=f"data pack not found at {DATA_DIR}"

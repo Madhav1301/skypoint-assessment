@@ -1,18 +1,15 @@
 """Provider SCD2 tests against the real roster snapshots."""
 
 from datetime import date
-from pathlib import Path
 
 import pytest
 
 from pipeline.scd2 import BACKDATED_FROM, OPEN_ENDED_TO, build_provider_scd2, load_roster_snapshots
 
-ROSTER_DIR = Path(__file__).resolve().parents[2] / "data" / "candidate_pack" / "reference" / "provider_roster"
-
 
 @pytest.fixture(scope="module")
-def periods():
-    return build_provider_scd2(load_roster_snapshots(ROSTER_DIR))
+def periods(data_dir):
+    return build_provider_scd2(load_roster_snapshots(data_dir / "reference" / "provider_roster"))
 
 
 def by_npi(periods, npi):

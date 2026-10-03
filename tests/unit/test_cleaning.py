@@ -10,20 +10,18 @@ from __future__ import annotations
 import dataclasses
 from datetime import date, datetime, timezone
 from decimal import Decimal
-from pathlib import Path
 
 import pytest
 
 from pipeline.cleaning import build_context, clean_row
 from pipeline.config import load_source_conventions
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
 SECRET = "unit-test-secret"
 
 
 @pytest.fixture(scope="module")
-def ctx(value_mappings, facility_aliases, icd10_codes):
-    conventions = load_source_conventions(REPO_ROOT / "data" / "candidate_pack")["source_systems"]
+def ctx(value_mappings, facility_aliases, icd10_codes, data_dir):
+    conventions = load_source_conventions(data_dir)["source_systems"]
     return build_context(
         conventions=conventions,
         facility_aliases_cfg=facility_aliases,
