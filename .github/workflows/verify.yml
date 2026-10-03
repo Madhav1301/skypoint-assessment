@@ -1,0 +1,48 @@
+# Fresh-machine verification of the assessor flow: clone, one command,
+# exit 0, outputs present, batch_004 rejected-not-fatal, tests in container.
+name: verify
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare environment file
+        run: cp .env.example .env
+
+      - name: One-command run (docker compose up --build)
+        run: docker compose up --build --exit-code-from pipeline pipeline
+
+      - name: Outputs written to ./output
+        run: |
+          ls -l output
+          test -f output/chronic_acute_encounters.csv
+          test -f output/batch_audit.csv
+          test -f output/quarantine.csv
+          test -f output/fact_encounter_versions.csv
+          test -f output/dq_report_batch_004.md
+
+      - name: Rejected batch is reported, not fatal
+        run: |
+          grep -q 'batch_004' output/batch_audit.csv
+          grep -q 'MANIFEST_VALIDATION_FAILED' output/batch_audit.csv
+          grep -q 'REJECTED' output/dq_report_batch_004.md
+
+      - name: Test suite in container (docker compose run --rm tests)
+        run: docker compose run --rm tests
+
+      - name: Upload generated outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-outputs
+          path: |
+            output/*.csv
+            output/*.md
+          retention-days: 14
