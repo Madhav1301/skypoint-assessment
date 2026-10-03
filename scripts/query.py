@@ -13,6 +13,7 @@ this needs no escaping at all.
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import sys
 from pathlib import Path
@@ -20,6 +21,9 @@ from pathlib import Path
 import duckdb
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+# Same resolution as the pipeline: OUTPUT_DIR env (set to /output in Docker),
+# falling back to the repo's output/ for local venv use.
+DEFAULT_DB = Path(os.environ.get("OUTPUT_DIR") or (REPO_ROOT / "output")) / "warehouse.duckdb"
 _SQL_BLOCK_RE = re.compile(r"```sql\n(.*?)```", re.DOTALL)
 
 
@@ -34,8 +38,8 @@ def main() -> None:
     parser.add_argument("number", nargs="?", type=int,
                         help="README query number (1-6); omit to list them")
     parser.add_argument("--sql", help="ad-hoc SQL to run instead of a README query")
-    parser.add_argument("--db", default=str(REPO_ROOT / "output" / "warehouse.duckdb"),
-                        help="path to the warehouse file (default: output/warehouse.duckdb)")
+    parser.add_argument("--db", default=str(DEFAULT_DB),
+                        help="path to the warehouse file (default: $OUTPUT_DIR/warehouse.duckdb)")
     args = parser.parse_args()
 
     queries = readme_queries()
