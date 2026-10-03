@@ -11,11 +11,7 @@ __pycache__/
 .vscode/
 .idea/
 
-# generated outputs are ignored during development;
-# the final submission commits them (remove the two lines below at release)
-output/*
-!output/.gitkeep
-
-# local database files anywhere else
+# generated output CSVs and DQ reports ARE committed (a deliverable).
+# The DuckDB warehouse file is not: its raw layer contains PHI.
 *.duckdb
 *.duckdb.wal

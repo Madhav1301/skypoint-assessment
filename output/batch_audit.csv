@@ -1,0 +1,17 @@
+batch_id,file_name,source_system,status,reason,rows_received,rows_loaded,rows_duplicate,rows_stale,rows_quarantined,delivered_at,started_at,finished_at,duration_ms
+batch_001,,,ACCEPTED,,2863,2806,30,0,27,2025-01-06T06:00:00Z,2026-10-03 18:16:00.07642+05:30,2026-10-03 18:16:00.715431+05:30,639
+batch_001,encounters_athena_clinics.csv,ATHENA_CLINICS,ACCEPTED,,1090,1062,8,0,20,,,,
+batch_001,encounters_epic_north.csv,EPIC_NORTH,ACCEPTED,,1432,1408,17,0,7,,,,
+batch_001,encounters_legacy_meditech.csv,LEGACY_MEDITECH,ACCEPTED,,341,336,5,0,0,,,,
+batch_002,,,ACCEPTED,,585,541,40,0,4,2025-01-13T06:00:00Z,2026-10-03 18:16:00.770738+05:30,2026-10-03 18:16:01.052581+05:30,281
+batch_002,encounters_athena_clinics.csv,ATHENA_CLINICS,ACCEPTED,,147,129,14,0,4,,,,
+batch_002,encounters_epic_north.csv,EPIC_NORTH,ACCEPTED,,174,154,20,0,0,,,,
+batch_002,encounters_legacy_meditech.csv,LEGACY_MEDITECH,ACCEPTED,,264,258,6,0,0,,,,
+batch_003,,,ACCEPTED,,188,162,25,0,1,2025-01-20T06:00:00Z,2026-10-03 18:16:01.102915+05:30,2026-10-03 18:16:01.328595+05:30,225
+batch_003,encounters_athena_clinics.csv,ATHENA_CLINICS,ACCEPTED,,74,64,9,0,1,,,,
+batch_003,encounters_epic_north.csv,EPIC_NORTH,ACCEPTED,,83,71,12,0,0,,,,
+batch_003,encounters_legacy_meditech.csv,LEGACY_MEDITECH,ACCEPTED,,31,27,4,0,0,,,,
+batch_004,,,REJECTED,"MANIFEST_VALIDATION_FAILED: encounters_epic_north.csv: ROW_COUNT_MISMATCH expected=22 actual=18, SHA256_MISMATCH",,,,,,2025-01-27T06:00:00Z,2026-10-03 18:16:01.359234+05:30,2026-10-03 18:16:01.388821+05:30,29
+batch_004,encounters_athena_clinics.csv,ATHENA_CLINICS,NOT_LOADED,BATCH_REJECTED (all-or-nothing),22,,,,,,,,
+batch_004,encounters_epic_north.csv,EPIC_NORTH,REJECTED,ROW_COUNT_MISMATCH expected=22 actual=18; SHA256_MISMATCH,18,,,,,,,,
+batch_004,encounters_legacy_meditech.csv,LEGACY_MEDITECH,NOT_LOADED,BATCH_REJECTED (all-or-nothing),22,,,,,,,,
