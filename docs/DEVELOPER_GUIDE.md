@@ -44,7 +44,8 @@ skypoint-assessment/
 │   ├── value_mappings.yaml        spelling variants -> canonical values
 │   ├── facility_aliases.yaml      facility name variants -> facility IDs
 │   └── dq_rules.yaml              every quality check + its severity
-├── data/candidate_pack/         The input data (mounted read-only)
+├── data/candidate_pack/         The input data (confidential: provided
+│                                  separately, never committed; mounted read-only)
 ├── docs/DEVELOPER_GUIDE.md      This document
 ├── output/                      Everything the pipeline produces
 ├── scripts/query.py             Helper to run the README's example queries

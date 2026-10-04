@@ -11,6 +11,10 @@ __pycache__/
 .vscode/
 .idea/
 
+# The data pack is confidential (invitation-email rule) and the repository
+# is public: never commit it. Place it at data/candidate_pack to run.
+data/candidate_pack/
+
 # generated output CSVs and DQ reports ARE committed (a deliverable).
 # The DuckDB warehouse file is not: its raw layer contains PHI.
 *.duckdb

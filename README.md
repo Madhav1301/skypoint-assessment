@@ -37,9 +37,16 @@ audit rows and DQ results — and changes no modeled table.
 
 ## How to run
 
+> **Data pack first:** the assessment data is confidential and this
+> repository is public (both per the invitation email), so the pack is not
+> committed. Copy the provided `candidate_pack` folder to
+> `data/candidate_pack/` — see [data/README.md](data/README.md) for the
+> expected layout. Everything else is one command.
+
 ```bash
-git clone <this-repo>
+git clone https://github.com/Madhav1301/skypoint-assessment.git
 cd skypoint-assessment
+# place the provided data pack at data/candidate_pack/
 cp .env.example .env          # safe development defaults
 docker compose up --build
 ```
@@ -199,6 +206,7 @@ ORDER BY batch_id, file_name NULLS FIRST, source_row_number;
 | A14 | A version older than the newest already held (not an exact redelivery) is counted stale and excluded from history, so it can never affect current state or as-of reporting. |
 | A15 | `patient_key` is HMAC-SHA256 truncated to 128 bits; person-scope and identity-scope inputs are domain-separated. |
 | A16 | The DuckDB file is not committed: its raw layer contains PHI. The committed CSVs are PHI-free by construction. |
+| A17 | The invitation email supersedes the brief where they conflict: the repository is **public**, therefore the confidential data pack is excluded from the repository and its entire git history; assessors place their copy at `data/candidate_pack/` before running. |
 
 ## System requirements, limitations
 
