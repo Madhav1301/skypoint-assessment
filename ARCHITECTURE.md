@@ -2,8 +2,7 @@
 
 This document covers design judgement and ownership: the data model as
 built, how the same design runs in production on Azure Databricks (with the
-Snowflake mapping noted), PHI governance, quality at scale, cost, delivery,
-and how I would plan the production build.
+Snowflake mapping noted), PHI governance, quality at scale, and cost.
 
 ---
 
@@ -189,46 +188,3 @@ precisely how the ATHENA v2 schema is handled in this repo.
   this is a small-data pipeline and the honest cost answer is "tiny" — the
   design spends engineering effort on correctness and governance, not
   cluster tuning. Reprocessing scales linearly by replaying landing.
-
-## 6. Delivery
-
-- **Environments:** dev / staging / prod as separate catalogs + workspaces;
-  the synthetic pack doubles as the staging smoke test.
-- **CI (per PR):** lint + unit tests (seconds), integration run against the
-  pack in a container, PHI-leak scan of outputs, README query check.
-- **CD:** Databricks Asset Bundles (or Terraform) deploy jobs + contracts on
-  merge to main; tags promote to prod.
-- **Testing strategy:** the pyramid as implemented here — pure parsers with
-  table-driven unit tests, behaviour tests on synthetic batches (gate,
-  rejection, stale), full-pipeline determinism proofs (idempotency, as-of).
-
-## 7. Planning the production build (6 weeks × 3 engineers)
-
-| Week | Eng A — ingestion & contracts | Eng B — model & marts | Eng C — platform & governance |
-|---|---|---|---|
-| 1 | landing layout, manifest gate, batch registry | model spec: grains, keys, SCD2 design review | workspaces, UC catalogs, CI skeleton |
-| 2 | bronze + schema contracts + quarantine | silver cleaning + reason codes, parser ports + tests | secrets (Key Vault), service principals, masking policies |
-| 3 | ordered upserts, duplicate/stale semantics + proofs | gold dims/facts, current + as-of views | dashboards on audit/dq, alerting |
-| 4 | backfill/replay tooling | exports + consumer marts, readmission logic | PHI leak scans in CI, access reviews |
-| 5 | second-source onboarding drill (contract exercise) | performance pass, partitioning/OPTIMIZE | runbooks, on-call, SLA wiring |
-| 6 | hardening, failure-mode game day | UAT with analysts, query patterns signed off | prod cutover, DR/restore test |
-
-**PR review checklist:** contract/config change separated from logic change;
-tests added at the right layer (parser/unit vs pipeline/integration);
-idempotency unaffected (no wall-clock in outputs); no PHI in logs, errors,
-fixtures or outputs; reason codes documented in dq_rules; lineage preserved
-end-to-end; migration/backfill note if table shape changed.
-
-**Top three risks:**
-1. **Silent semantic drift from sources** (a system changes units or
-   timezone without changing the header). Mitigation: distribution checks in
-   DQ (amount percentiles per system, timezone skew detection), contracts
-   with change-notice SLAs, quarantine trends alerting.
-2. **Identity errors** (false merge worst clinically). Mitigation: keep the
-   deterministic rule conservative, measure collision candidates
-   (same key, conflicting MRNs per system), move to reviewed probabilistic
-   linkage before any clinical use.
-3. **PHI leakage through a side channel** (logs, error messages, debug
-   output). Mitigation: structural boundary (clean layer physically lacks
-   the columns), CI leak scans, code-review checklist item, restricted raw
-   catalog with audited access.

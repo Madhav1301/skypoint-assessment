@@ -215,7 +215,7 @@ ORDER BY batch_id, file_name NULLS FIRST, source_row_number;
 ## Documentation
 
 - [ARCHITECTURE.md](ARCHITECTURE.md) — data model, production design on
-  Databricks/Snowflake, PHI governance, scaling, delivery, team plan.
+  Databricks/Snowflake, PHI governance, quality at scale, cost.
 - [docs/DEVELOPER_GUIDE.md](docs/DEVELOPER_GUIDE.md) — plain-language
   walkthrough of every module, function, config file and table; includes a
   glossary and a "where would I change X?" cheat sheet.
